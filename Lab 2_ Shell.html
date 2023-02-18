@@ -1,0 +1,927 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0058)https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 2: Shell</title>
+<meta name="generator" content="Org Mode">
+<link rel="stylesheet" type="text/css" href="./Lab 2_ Shell_files/htmlize.css">
+<link rel="stylesheet" type="text/css" href="./Lab 2_ Shell_files/readtheorg.css">
+<script src="./Lab 2_ Shell_files/jquery.min.js"></script>
+<script src="./Lab 2_ Shell_files/bootstrap.min.js"></script>
+<script type="text/javascript" src="./Lab 2_ Shell_files/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="./Lab 2_ Shell_files/readtheorg.js"></script>
+<style>pre.src{background:#fafafa;color:#383a42;}</style>
+</head>
+<body>
+<div id="content" class="content"><div id="toggle-sidebar"><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#table-of-contents"><h2>Table of Contents</h2></a></div>
+<h1 class="title">Lab 2: Shell</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents<a class="close-sidebar" href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#">Close</a></h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul class="nav">
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#introduction">Introduction</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#objectives">Objectives</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#overview">Overview</a></li>
+<li class="active"><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#specifications">Specifications</a>
+<ul>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#theprompt">The prompt</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#thecommand">The command</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#locatingprograms">Locating programs</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#processterminationandsuspension">Process termination and suspension</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#signalhandling">Signal handling</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#ioredirection">I/O redirection</a>
+<ul>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#inputredirection">Input redirection</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#outputredirection">Output redirection</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#pipe">Pipe</a></li>
+</ul>
+</li>
+<li class="active"><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#builtincommands">Built-in commands</a>
+<ul>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#cddir"><code>cd &lt;dir&gt;</code></a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#jobs"><code>jobs</code></a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#fgindex"><code>fg &lt;index&gt;</code></a></li>
+<li class="active"><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#exit"><code>exit</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#compilation">Compilation</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#evaluation">Evaluation</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#submission">Submission</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#rubric">Rubric</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#tips">Tips</a>
+<ul>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#dontprocrastinatedontprocrastinatedontprocrastinate">Don’t procrastinate! Don’t procrastinate!! Don’t procrastinate!!!</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#howtogetstarted">How to get started?</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#usefulsystemcalls">Useful system calls</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#readingmanpages">Reading man pages</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#parsingthecommandline">Parsing the command line</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#ingdbhowtodebugthechildprocessafterfork">In <code>gdb</code>, how to debug the child process after <code>fork()</code>?</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#imstillconfusedaboutpipesanymorehints">I’m still confused about pipes. Any more hints?</a></li>
+<li><a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush#imstillconfusedaboutsuspendedjobsanymorehints">I’m still confused about suspended jobs. Any more hints?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-introduction" class="outline-2">
+<h2 id="introduction">Introduction</h2>
+<div class="outline-text-2" id="text-introduction">
+<p>
+The <b>shell</b> is the main command-line interface between a user and the operating system, and it is an essential part of the daily lives of computer scientists, software engineers, system administrators, and such. It makes heavy use of many OS features. In this lab, you will build a simplified version of the Unix shell called the <b>New Yet Usable SHell</b>, or <code>nyush</code> for short.
+</p>
+
+<p>
+<i>Please review <a href="https://missing.csail.mit.edu/2020/course-shell/">the first lecture of MIT’s The Missing Semester of Your CS Education</a> if you are not familiar with the shell.</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-objectives" class="outline-2">
+<h2 id="objectives">Objectives</h2>
+<div class="outline-text-2" id="text-objectives">
+<p>
+Through this lab, you will:
+</p>
+
+<ul class="org-ul">
+<li>Familiarize yourself with the Linux programming environment and the shell, of course.</li>
+<li>Learn how to write an interactive command-line program.</li>
+<li>Learn how processes are created, destroyed, and managed.</li>
+<li>Learn how to handle signals and I/O redirection.</li>
+<li>Get a better understanding of the OS and system calls.</li>
+<li>Be a better C programmer and be better prepared for your future technical job interviews. In particular, the string parsing skill that you will practice in this lab is desired in many interview questions.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-overview" class="outline-2">
+<h2 id="overview">Overview</h2>
+<div class="outline-text-2" id="text-overview">
+<p>
+The shell is essentially a command-line interpreter. It works as follows:
+</p>
+
+<ol class="org-ol">
+<li>It prompts you to enter a command.</li>
+<li>It interprets the command you entered.
+<ul class="org-ul">
+<li>If you entered a <b>built-in command</b> (<i>e.g.</i>, <code>cd</code>), then the shell runs that command.</li>
+<li>If you entered an external <b>program</b> (<i>e.g.</i>, <code>/bin/ls</code>), or multiple programs connected through <b>pipes</b> (<i>e.g.</i>, <code>ls -l | less</code>), then the shell creates child processes, executes these programs, and waits for <b>all</b> these processes to either terminate or be suspended.</li>
+<li>If you entered something wrong, then the shell prints an error message.</li>
+</ul></li>
+<li>Rinse and repeat until you press <code>Ctrl-D</code> to close <code>STDIN</code> or enter the built-in command <code>exit</code>, at which point the shell exits.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-specifications" class="outline-2">
+<h2 id="specifications">Specifications</h2>
+<div class="outline-text-2" id="text-specifications">
+<p>
+Your shell should follow these specifications carefully. These specifications may be slight different from the default Linux shell (<code>bash</code>) for simplicity.
+</p>
+</div>
+
+<div id="outline-container-theprompt" class="outline-3">
+<h3 id="theprompt">The prompt</h3>
+<div class="outline-text-3" id="text-theprompt">
+<p>
+The <b>prompt</b> is what the shell prints before waiting for you to enter a command. In this lab, your prompt must have exactly the following format:
+</p>
+
+<ul class="org-ul">
+<li>An opening bracket <code>[</code>.</li>
+<li>The word <code>nyush</code>.</li>
+<li>A whitespace.</li>
+<li>The <b>basename</b> of the <b>current working directory</b>.</li>
+<li>A closing bracket <code>]</code>.</li>
+<li>A dollar sign <code>$</code>.</li>
+<li>Another whitespace.</li>
+</ul>
+
+<p>
+For example, if you are in <code>/home/abc123/cs202/lab2</code>, then the prompt should be:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ █
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+If you are in the root directory (<code>/</code>), then the prompt should be:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush /]$ █
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+Note that the final <code>█</code> character in these examples represents your <i>cursor</i>; you should <b>not</b> print that character in your shell prompt.
+</p>
+
+<p>
+Keep in mind that <code>STDOUT</code> is line-buffered by default. Therefore, don’t forget to <b>flush</b> <code>STDOUT</code> immediately after you print the prompt. Otherwise, your program may not work correctly with the autograder.
+</p>
+</div>
+</div>
+
+<div id="outline-container-thecommand" class="outline-3">
+<h3 id="thecommand">The command</h3>
+<div class="outline-text-3" id="text-thecommand">
+<p>
+In each iteration, the user inputs a command terminated by the “enter” key (<i>i.e.</i>, newline). A command may contain multiple programs separated by the <b>pipe</b> (<code>|</code>) symbol. A valid command must satisfy the following requirements:
+</p>
+
+<ul class="org-ul">
+<li>If there are multiple programs in a command, only the <b>first</b> program may <b>redirect its input</b> (using <code>&lt;</code>), and only the <b>last</b> program may <b>redirect its output</b> (using <code>&gt;</code> or <code>&gt;&gt;</code>). If there is only one program in a command, it may redirect both input and output.</li>
+<li>In each command, there are no more than one input redirection and one output redirection.</li>
+<li>Built-in commands (<i>e.g.</i>, <code>cd</code>) cannot be I/O redirected or piped.</li>
+</ul>
+
+<p>
+For simplicity, our test cases have the following assumptions:
+</p>
+
+<ul class="org-ul">
+<li>Each command has no more than 1000 characters.</li>
+<li>There is always <b>a single space</b> separating filenames, arguments, and the pipe and redirection symbols (<code>|</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&gt;&gt;</code>).</li>
+<li>There are no spaces within a filename or an argument.</li>
+</ul>
+
+<p>
+For your reference, here is the <a href="https://en.wikipedia.org/wiki/Formal_grammar">grammar</a> for valid commands (don’t worry if you can’t understand it; just look at the examples below):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[command] := ""; or
+          := [cd] [arg]; or
+          := [exit]; or
+          := [fg] [arg]; or
+          := [jobs]; or
+          := [cmd] '&lt;' [filename] [recursive]; or
+          := [cmd] '&lt;' [filename] [terminate]; or
+          := [cmd] [recursive]; or
+          := [cmd] [terminate] &lt; [filename]; or
+          := [cmd] [terminate].
+
+[recursive] := '|' [cmd] [recursive]; or
+            := '|' [cmd] [terminate].
+
+[terminate] := ""; or
+            := '&gt;' [filename]; or
+            := '&gt;&gt;' [filename].
+
+[cmd] := [cmdname] [arg]*
+
+[cmdname] := A string without any space, tab, &gt; (ASCII 62), &lt; (ASCII 60), | (ASCII 124), * (ASCII 42), ! (ASCII 33), ` (ASCII 96), ' (ASCII 39), nor " (ASCII 34) characters. Besides, the cmdname is not cd, exit, fg, jobs.
+
+[arg] := A string without any space, tab, &gt; (ASCII 62), &lt; (ASCII 60), | (ASCII 124), * (ASCII 42), ! (ASCII 33), ` (ASCII 96), ' (ASCII 39), nor " (ASCII 34) characters.
+
+[filename] := A string without any space, tab, &gt; (ASCII 62), &lt; (ASCII 60), | (ASCII 124), * (ASCII 42), ! (ASCII 33), ` (ASCII 96), ' (ASCII 39), nor " (ASCII 34) characters.
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+Here are some examples of <b><b>valid</b></b> commands:
+</p>
+
+<ul class="org-ul">
+<li>A blank line.</li>
+<li><code>/usr/bin/ls -a -l</code></li>
+<li><code>cat shell.c | grep main | less</code></li>
+<li><code>cat &lt; input.txt</code></li>
+<li><code>cat &gt; output.txt</code></li>
+<li><code>cat &gt;&gt; output.txt</code></li>
+<li><code>cat &lt; input.txt &gt; output.txt</code></li>
+<li><code>cat &lt; input.txt &gt;&gt; output.txt</code></li>
+<li><code>cat &gt; output.txt &lt; input.txt</code></li>
+<li><code>cat &gt;&gt; output.txt &lt; input.txt</code></li>
+<li><code>cat &lt; input.txt | cat &gt; output.txt</code></li>
+<li><code>cat &lt; input.txt | cat | cat &gt;&gt; output.txt</code></li>
+</ul>
+
+<p>
+Here are some examples of <b><b>invalid</b></b> commands:
+</p>
+
+<ul class="org-ul">
+<li><code>cat &lt;</code></li>
+<li><code>cat &gt;</code></li>
+<li><code>cat |</code></li>
+<li><code>| cat</code></li>
+<li><code>cat &lt;&lt; file.txt</code></li>
+<li><code>cat &lt; file.txt &lt; file2.txt</code></li>
+<li><code>cat &lt; file.txt file2.txt</code></li>
+<li><code>cat &gt; file.txt &gt; file2.txt</code></li>
+<li><code>cat &gt; file.txt &gt;&gt; file2.txt</code></li>
+<li><code>cat &gt; file.txt file2.txt</code></li>
+<li><code>cat &gt; file.txt | cat</code></li>
+<li><code>cat | cat &lt; file.txt</code></li>
+<li><code>cd / &gt; file.txt</code></li>
+</ul>
+
+<p>
+If there is any error in parsing the command, then your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid command
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+Note that there should be a newline at the end of the error message. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ cat &lt;
+Error: invalid command
+[nyush lab2]$ █
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+<i>(Again, the final</i> <code>█</code> <i>character represents your cursor.)</i>
+</p>
+</div>
+</div>
+
+<div id="outline-container-locatingprograms" class="outline-3">
+<h3 id="locatingprograms">Locating programs</h3>
+<div class="outline-text-3" id="text-locatingprograms">
+<p>
+You can specify a program by either an <b>absolute path</b>, a <b>relative path</b>, or <b>base name only</b>.
+</p>
+
+<ol class="org-ol">
+<li>An <b>absolute path</b> begins with a slash (<code>/</code>). If the user specifies an absolute path, then your shell must run the program at that location.</li>
+
+<li>A <b>relative path</b> contains, but not begins with, a slash (<code>/</code>). If the user specifies a relative path, then your shell should locate the program by following the path from the current working directory. For example, <code>dir1/dir2/program</code> is equivalent to <code>./dir1/dir2/program</code>.</li>
+
+<li>Otherwise, if the user specifies <b>only the base name</b> without any slash (<code>/</code>), then your shell must search for the program under <code>/usr/bin</code>. For example, when the user types <code>ls</code>, then your shell should try <code>/usr/bin/ls</code>. If that fails, it is an error. In this case, your shell should <b>not</b> search the current working directory. For example, suppose there is a program named <code>hello</code> in the current working directory. Entering <code>hello</code> should result in an error, whereas <code>./hello</code> runs the program.</li>
+</ol>
+
+<p>
+In any case, if the program cannot be located, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid program
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-processterminationandsuspension" class="outline-3">
+<h3 id="processterminationandsuspension">Process termination and suspension</h3>
+<div class="outline-text-3" id="text-processterminationandsuspension">
+<p>
+After creating the processes, your shell must wait until <b>all</b> the processes have stopped running—either terminated or suspended. Then, your shell should prompt the user for the next command.
+</p>
+
+<p>
+<b>Your shell must not leave any zombies in the system</b> when it is ready to read the next command from the user.
+</p>
+</div>
+</div>
+
+<div id="outline-container-signalhandling" class="outline-3">
+<h3 id="signalhandling">Signal handling</h3>
+<div class="outline-text-3" id="text-signalhandling">
+<p>
+If a user presses <code>Ctrl-C</code> or <code>Ctrl-Z</code>, they don’t expect to terminate or suspend the shell. Therefore, your shell should <b>ignore</b> the following signals: <code>SIGINT</code>, <code>SIGQUIT</code>, and <code>SIGTSTP</code>. All other signals not listed here should keep the default signal handlers.
+</p>
+
+<p>
+Note that only the <b>shell</b> itself, not the child processes created by the shell, should ignore these signals. For example,
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ cat
+^C
+[nyush lab2]$ █
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+Here, the signal <code>SIGINT</code> generated by <code>Ctrl-C</code> terminates only the process <code>cat</code>, not the shell itself.
+</p>
+
+<p>
+As a side note, if your shell ever hangs and you would like to kill the shell, you can still send it the <code>SIGTERM</code> or <code>SIGKILL</code> signal. To do so, you can connect to the running Docker container from another terminal window using:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">docker exec -it cs202 bash
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+…and then kill your shell using:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[root@... cs202]# killall nyush
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-ioredirection" class="outline-3">
+<h3 id="ioredirection">I/O redirection</h3>
+<div class="outline-text-3" id="text-ioredirection">
+<p>
+Sometimes, a user would read the input to a program from a file rather than the keyboard, or send the output of a program to a file rather than the screen. Your shell should be able to redirect the <b>standard input</b> (<code>STDIN</code>) and the <b>standard output</b> (<code>STDOUT</code>). <i>For simplicity, you are not required to redirect the standard error (<code>STDERR</code>).</i>
+</p>
+</div>
+
+<div id="outline-container-inputredirection" class="outline-4">
+<h4 id="inputredirection">Input redirection</h4>
+<div class="outline-text-4" id="text-inputredirection">
+<p>
+Input redirection is achieved by a <code>&lt;</code> symbol followed by a filename. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ cat &lt; input.txt
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+If the file does not exist, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid file
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-outputredirection" class="outline-4">
+<h4 id="outputredirection">Output redirection</h4>
+<div class="outline-text-4" id="text-outputredirection">
+<p>
+Output redirection is achieved by <code>&gt;</code> or <code>&gt;&gt;</code> followed by a filename. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ ls -l &gt; output.txt
+[nyush lab2]$ ls -l &gt;&gt; output.txt
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+If the file does not exist, a new file should be created. If the file already exists, redirecting with <code>&gt;</code> should <b>overwrite</b> the file (after truncating it), whereas redirecting with <code>&gt;&gt;</code> should <b>append</b> to the existing file.
+</p>
+</div>
+</div>
+
+<div id="outline-container-pipe" class="outline-4">
+<h4 id="pipe">Pipe</h4>
+<div class="outline-text-4" id="text-pipe">
+<p>
+A <b>pipe</b> (<code>|</code>) connects the standard output of the first program to the standard input of the second program. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ cat shell.c | wc -l
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+The user may invoke <i>n</i> programs chained through (<i>n</i> - 1) pipes. Each pipe connects the output of the program immediately before the pipe to the input of the program immediately after the pipe. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ cat shell.c | grep main | less
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+Here, the output of <code>cat shell.c</code> is the input of <code>grep main</code>, and the output of <code>grep main</code> is the input of <code>less</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-builtincommands" class="outline-3">
+<h3 id="builtincommands">Built-in commands</h3>
+<div class="outline-text-3" id="text-builtincommands">
+<p>
+Every shell has a few built-in commands. When the user issues a command, the shell should first check if it is a <b>built-in command</b>. If so, it should not be executed like other programs.
+</p>
+
+<p>
+In this lab, you will implement four built-in commands: <code>cd</code>, <code>jobs</code>, <code>fg</code>, and <code>exit</code>.
+</p>
+</div>
+
+<div id="outline-container-cddir" class="outline-4">
+<h4 id="cddir"><code>cd &lt;dir&gt;</code></h4>
+<div class="outline-text-4" id="text-cddir">
+<p>
+This command changes the <b>current working directory</b> of the shell. It takes exactly one argument: the directory, which may be an absolute or relative path. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ cd /usr/local
+[nyush local]$ cd bin
+[nyush bin]$ █
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+If <code>cd</code> is called with 0 or 2+ arguments, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid command
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+If the directory does not exist, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid directory
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-jobs" class="outline-4">
+<h4 id="jobs"><code>jobs</code></h4>
+<div class="outline-text-4" id="text-jobs">
+<p>
+This command prints a list of currently <b>suspended</b> jobs to <code>STDOUT</code>, one job per line. Each line has the following format: <code>[index] command</code>. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ jobs
+[1] ./hello
+[2] /usr/bin/top -c
+[3] cat &gt; output.txt
+[nyush lab2]$ █
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+(If there are no currently suspended jobs, this command should print nothing.)
+</p>
+
+<p>
+A job is the whole command, including any arguments and I/O redirections. A job may be suspended by <code>Ctrl-Z</code>, the <code>SIGTSTP</code> signal, or the <code>SIGSTOP</code> signal. This list is sorted by the time each job is suspended (oldest first), and the index starts from 1.
+</p>
+
+<p>
+For simplicity, we have the following assumptions:
+</p>
+
+<ul class="org-ul">
+<li>There are no more than 100 suspended jobs at one time.</li>
+<li>There are no pipes in any suspended jobs.</li>
+<li>The only way to resume a suspended job is by using the <code>fg</code> command (see below). We will not try to resume or terminate a suspended job by other means. We will not try to press <code>Ctrl-C</code> or <code>Ctrl-D</code> while there are suspended jobs.</li>
+<li>You don’t need to worry about “process groups.” (If you don’t know what process groups are, don’t worry.)</li>
+</ul>
+
+<p>
+The <code>jobs</code> command takes no arguments. If it is called with any arguments, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid command
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-fgindex" class="outline-4">
+<h4 id="fgindex"><code>fg &lt;index&gt;</code></h4>
+<div class="outline-text-4" id="text-fgindex">
+<p>
+This command resumes a job in the foreground. It takes exactly one argument: the job index, which is the number inside the bracket printed by the <code>jobs</code> command. For example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ jobs
+[1] ./hello
+[2] /usr/bin/top -c
+[3] cat &gt; output.txt
+[nyush lab2]$ fg 2
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+The last command would resume <code>/usr/bin/top -c</code> in the foreground. Note that the job index of <code>cat &gt; output.txt</code> would become 2 as a result. Should the job <code>/usr/bin/top -c</code> be suspended <i>again</i>, it would be inserted to the end of the job list:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">[nyush lab2]$ jobs
+[1] ./hello
+[2] cat &gt; output.txt
+[3] /usr/bin/top -c
+[nyush lab2]$ █
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+If <code>fg</code> is called with 0 or 2+ arguments, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid command
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+If the job <code>index</code> does not exist in the list of currently suspended jobs, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid job
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-exit" class="outline-4">
+<h4 id="exit"><code>exit</code></h4>
+<div class="outline-text-4" id="text-exit">
+<p>
+This command terminates your shell. However, if there are currently suspended jobs, your shell should not terminate. Instead, it should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: there are suspended jobs
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+The <code>exit</code> command takes no arguments. If it is called with any arguments, your shell should print the following error message to <code>STDERR</code> and prompt for the next command.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">Error: invalid command
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+Note that if the <code>STDIN</code> of your shell is closed (<i>e.g.</i>, by pressing <code>Ctrl-D</code> at the prompt), your shell should terminate regardless of whether there are suspended jobs.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-compilation" class="outline-2">
+<h2 id="compilation">Compilation</h2>
+<div class="outline-text-2" id="text-compilation">
+<p>
+We will grade your submission in an x86_64 <a href="https://rockylinux.org/">Rocky Linux</a> 8 container on Gradescope. We will compile your program using <code>gcc</code> 12.1.1 with the C17 standard and GNU extensions.
+</p>
+
+<p>
+You must provide a <code>Makefile</code>, and by running <code>make</code>, it should generate an executable file named <code>nyush</code> in the current working directory. <i>(Refer to <a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyuc#compilation">Lab 1</a> for an example of the <code>Makefile</code>.)</i>
+</p>
+
+<p>
+<b>Your program must not call the <code>system()</code> function or execute <code>/bin/sh</code>.</b> Otherwise, what is the whole point of this lab?
+</p>
+</div>
+</div>
+
+<div id="outline-container-evaluation" class="outline-2">
+<h2 id="evaluation">Evaluation</h2>
+<div class="outline-text-2" id="text-evaluation">
+<p>
+Beat up your own code extensively. Better yet, <a href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food">eat your own dog food</a>. I would happily use <code>nyush</code> as my main shell (at least for the duration of this lab), so why wouldn’t you?
+</p>
+
+<p>
+We are providing a <a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyush-autograder.tar.xz">sample autograder</a> with a few test cases. Please extract them inside the Docker container and follow the instructions in the <code>README</code> file. <i>(Refer to <a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/nyuc#gettingnyuctemplatefiles">Lab 1</a> for how to extract a <code>.tar.xz</code> file.)</i>
+</p>
+
+<p>
+Note that these test cases are <b>not</b> exhaustive. The test cases on Gradescope are different from the ones provided and will not be disclosed. Do not try to hack or exploit the autograder.
+</p>
+</div>
+</div>
+
+<div id="outline-container-submission" class="outline-2">
+<h2 id="submission">Submission</h2>
+<div class="outline-text-2" id="text-submission">
+<p>
+You must submit a <code>.zip</code> archive containing all files needed to compile <code>nyush</code> in the root of the archive. You can create the archive file with the following command in the Docker container:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text" style="position: relative;">$ zip nyush.zip Makefile *.h *.c
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+<p>
+Note that other file formats (<i>e.g.</i>, <code>rar</code>) will <b>not</b> be accepted.
+</p>
+
+<p>
+You need to <b>upload the <code>.zip</code> archive to Gradescope</b>. If you need to acknowledge any influences per our <a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/#academicintegrity">academic integrity policy</a>, write them as comments in your source code.
+</p>
+</div>
+</div>
+
+<div id="outline-container-rubric" class="outline-2">
+<h2 id="rubric">Rubric</h2>
+<div class="outline-text-2" id="text-rubric">
+<p>
+The total of this lab is <b>100 points</b>, mapped to <b>15% of your final grade</b> of this course.
+</p>
+
+<ul class="org-ul">
+<li>Compile successfully and can print the correct prompt. (40 points)</li>
+<li>Process creation and termination. (20 points)</li>
+<li>Simple built-in commands (<code>cd</code> and <code>exit</code>) and error handling. (10 points)</li>
+<li>Input and output redirection. (10 points)</li>
+<li>Pipes. (10 points)</li>
+<li>Handling suspended jobs (<code>jobs</code> and <code>fg</code>). (10 points)</li>
+</ul>
+
+<p>
+<b>You will get 0 points for this lab if you call the <code>system()</code> function or execute <code>/bin/sh</code>.</b>
+</p>
+
+<p>
+Please make sure that your shell prompt and all error messages are <b>exactly as specified</b> in this document. Any discrepancy may lead to point deductions.
+</p>
+</div>
+</div>
+
+<div id="outline-container-tips" class="outline-2">
+<h2 id="tips">Tips</h2>
+<div class="outline-text-2" id="text-tips">
+</div>
+<div id="outline-container-dontprocrastinatedontprocrastinatedontprocrastinate" class="outline-3">
+<h3 id="dontprocrastinatedontprocrastinatedontprocrastinate">Don’t procrastinate! Don’t procrastinate!! Don’t procrastinate!!!</h3>
+<div class="outline-text-3" id="text-dontprocrastinatedontprocrastinatedontprocrastinate">
+<p>
+This lab is <b>significantly more challenging</b> than Lab 1 and requires <b>significant programming effort</b>. Therefore, <b>start as early as possible!</b> Don’t wait until the last week.
+</p>
+</div>
+</div>
+
+<div id="outline-container-howtogetstarted" class="outline-3">
+<h3 id="howtogetstarted">How to get started?</h3>
+<div class="outline-text-3" id="text-howtogetstarted">
+<p>
+<b>Please review our <a href="https://cs.nyu.edu/courses/spring23/CSCI-UA.0202-002/#academicintegrity">academic integrity policy</a> carefully before you start.</b>
+</p>
+
+<p>
+This lab requires you to <b>write a complete system from scratch</b>, so it may be daunting at first. Remember to get the <b>basic functionality</b> working first, and build up your shell step-by-step.
+</p>
+
+<p>
+Here is how I would tackle this lab:
+</p>
+
+<p>
+<b>Milestone 1.</b> Write a simple program that prints the prompt and flushes <code>STDOUT</code>. You may use the <code>getcwd()</code> system call to get the current working directory.
+</p>
+
+<p>
+<b>Milestone 2.</b> Write a loop that repeatedly prints the prompt and gets the user input. You may use the <code>getline()</code> library function to obtain user input.
+</p>
+
+<p>
+<b>Milestone 3.</b> Extend Milestone 2 to be able to run a simple program, such as <code>ls</code>. At this point, what you’ve written is already a shell! Conceptually, it might look like:
+</p>
+
+<script>function reveal0() { document.getElementById("nonspoiler0").style.display = "none"; document.getElementById("spoiler0").style.display = "inline"; }</script><button id="nonspoiler0" onclick="reveal0()">Click to reveal spoiler</button><div id="spoiler0" style="display:none">
+
+<div class="org-src-container">
+<pre class="src src-c" style="position: relative;"><span style="color: #e45649;">while</span> (<span style="color: #b751b6;">true</span>) {
+  <span style="color: #9ca0a4; font-style: italic;">// </span><span style="color: #9ca0a4; font-style: italic;">print prompt</span>
+  <span style="color: #9ca0a4; font-style: italic;">// </span><span style="color: #9ca0a4; font-style: italic;">read command</span>
+
+  pid = fork();
+  <span style="color: #e45649;">if</span> (pid &lt; <span style="color: #da8548; font-weight: bold;">0</span>) {
+    <span style="color: #9ca0a4; font-style: italic;">// </span><span style="color: #9ca0a4; font-style: italic;">fork failed (this shouldn't happen)</span>
+  } <span style="color: #e45649;">else</span> <span style="color: #e45649;">if</span> (pid == <span style="color: #da8548; font-weight: bold;">0</span>) {
+    <span style="color: #9ca0a4; font-style: italic;">// </span><span style="color: #9ca0a4; font-style: italic;">child (new process)</span>
+    execv(...);  <span style="color: #9ca0a4; font-style: italic;">// </span><span style="color: #9ca0a4; font-style: italic;">or another variant</span>
+    <span style="color: #9ca0a4; font-style: italic;">// </span><span style="color: #9ca0a4; font-style: italic;">exec failed</span>
+  } <span style="color: #e45649;">else</span> {
+    <span style="color: #9ca0a4; font-style: italic;">// </span><span style="color: #9ca0a4; font-style: italic;">parent</span>
+    waitpid(-<span style="color: #da8548; font-weight: bold;">1</span>, ...);
+  }
+}
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+</div>
+
+</div><p></p>
+
+<p>
+<b>Milestone 4.</b> Extend Milestone 3 to run a program with arguments, such as <code>ls -l</code>.
+</p>
+
+<p>
+<b>Milestone 5.</b> Handle simple built-in commands (<code>cd</code> and <code>exit</code>). You may use the <code>chdir()</code> system call to change the working directory.
+</p>
+
+<p>
+<b>Milestone 6.</b> Handle output redirection, such as <code>cat &gt; output.txt</code>.
+</p>
+
+<p>
+<b>Milestone 7.</b> Handle input redirection, such as <code>cat &lt; input.txt</code>.
+</p>
+
+<p>
+<b>Milestone 8.</b> Run two programs with one pipe, such as <code>cat | cat</code>. The example code in <code>man 2 pipe</code> is very helpful.
+</p>
+
+<p>
+<b>Milestone 9.</b> Handle multiple pipes, such as <code>cat | cat | cat</code>.
+</p>
+
+<p>
+<b>Milestone 10.</b> Handle suspended jobs and related built-in commands (<code>jobs</code> and <code>fg</code>). Read <code>man waitpid</code> to see how to wait for a <b>stopped</b> child.
+</p>
+
+<p>
+Some students may find handling suspended jobs easier than implementing pipes, so feel free to rearrange these milestones as you see fit.
+</p>
+
+<p>
+<b>Keep versions of your code!</b> Use <code>git</code> or similar tools, but <b>don’t make your repository public</b>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-usefulsystemcalls" class="outline-3">
+<h3 id="usefulsystemcalls">Useful system calls</h3>
+<div class="outline-text-3" id="text-usefulsystemcalls">
+<p>
+Your shell will make many system calls. Here are a few that you may find useful.
+</p>
+
+<ul class="org-ul">
+<li>Process management: <code>access()</code>, <code>fork()</code>, <code>execv()</code> (or other variants), <code>waitpid()</code>.</li>
+<li>I/O redirection and pipes: <code>dup2()</code>, <code>creat()</code>, <code>open()</code>, <code>close()</code>, <code>pipe()</code>.</li>
+<li>Signal handling: <code>signal()</code>.</li>
+<li>Built-in commands: <code>chdir()</code>, <code>getcwd()</code>, <code>kill()</code>.</li>
+</ul>
+
+<p>
+You might not need to use all of them, and you are free to use other system calls not mentioned above.
+</p>
+
+<p>
+Check the <b>return values</b> (and possibly, <a href="https://en.cppreference.com/w/c/error/errno"><code>errno</code></a>) of all system calls and library function calls from the very beginning of your work! This will often catch errors early, and it is a good programming practice.
+</p>
+</div>
+</div>
+
+<div id="outline-container-readingmanpages" class="outline-3">
+<h3 id="readingmanpages">Reading man pages</h3>
+<div class="outline-text-3" id="text-readingmanpages">
+<p>
+Man pages are of vital importance for programmers working on Linux and such. It’s a treasure trove of information.
+</p>
+
+<p>
+Man pages are divided into <b>sections</b>. Please see <code>man man</code> for the description of each section. In particular, Section 2 contains system calls. You will need to look them up a lot in this lab.
+</p>
+
+<p>
+Sometimes, you need to specify the section number explicitly. For example, <code>man kill</code> shows the <code>kill</code> command in Section 1 by default. If you need to look up the <code>kill()</code> system call, you need to invoke <code>man 2 kill</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-parsingthecommandline" class="outline-3">
+<h3 id="parsingthecommandline">Parsing the command line</h3>
+<div class="outline-text-3" id="text-parsingthecommandline">
+<p>
+You might find writing the command parser troublesome. Don’t be frustrated. You are not alone. However, it is an essential skill for any programmer, and it often appears in software engineer interviews. Once you get through it, you will never be afraid of it again.
+</p>
+
+<p>
+I personally find the <code>strtok_r()</code> function extremely helpful. You don’t have to use it, but why not give it a try?
+</p>
+</div>
+</div>
+
+<div id="outline-container-ingdbhowtodebugthechildprocessafterfork" class="outline-3">
+<h3 id="ingdbhowtodebugthechildprocessafterfork">In <code>gdb</code>, how to debug the child process after <code>fork()</code>?</h3>
+<div class="outline-text-3" id="text-ingdbhowtodebugthechildprocessafterfork">
+<p>
+By default, when a program forks, <code>gdb</code> will continue to debug the parent process, and the child process will run unimpeded.
+</p>
+
+<p>
+If you want to follow the child process instead of the parent process, use the command <code>set follow-fork-mode child</code>.
+</p>
+
+<p>
+If you want to debug both the parent and child processes, use the command <code>set detach-on-fork off</code>. Then, you can use <code>info inferiors</code> to show all processes and use <code>inferior</code> to switch to another process.
+</p>
+</div>
+</div>
+
+<div id="outline-container-imstillconfusedaboutpipesanymorehints" class="outline-3">
+<h3 id="imstillconfusedaboutpipesanymorehints">I’m still confused about pipes. Any more hints?</h3>
+<div class="outline-text-3" id="text-imstillconfusedaboutpipesanymorehints">
+<p>
+If you can already support I/O redirection for a single process, adding support for pipes shouldn’t be too difficult since a pipe is just two I/O redirections. Start by reading the example code in <code>man 3 pipe</code> and writing a simple program to see how pipe works.
+</p>
+
+<p>
+Here are some additional hints:
+</p>
+
+<script>function reveal1() { document.getElementById("nonspoiler1").style.display = "none"; document.getElementById("spoiler1").style.display = "inline"; }</script><button id="nonspoiler1" onclick="reveal1()">Click to reveal spoiler</button><div id="spoiler1" style="display:none">
+
+<ul class="org-ul">
+<li>Make sure a single pipe works before trying multiple pipes.</li>
+<li>To support a single pipe, the parent (shell) process should create the pipe and fork two children. The first child redirects its output to the write end of the pipe, and the second child redirects its input from the read end of the pipe. In other words, instead of opening a file for redirection, use the file descriptors returned by <code>pipe()</code>.</li>
+<li>Both children should run concurrently. The parent (shell) process should wait for both children. In other words, a child shouldn’t wait for another child.</li>
+<li>Make sure to close all unused file descriptors, otherwise your child process may not terminate. In the above case, the parent holds two ends of the pipe, and after <code>fork()</code>, each child holds two ends of the pipe. So altogether you need to close six file descriptors. The parent should close them before calling <code>waitpid()</code>, and the child should close them before calling <code>execv()</code>.</li>
+<li>Supporting multiple pipes is similar. For <i>N</i> processes, your shell should create <i>N</i>-1 pipes and fork <i>N</i> children. You can either write a loop or use recursion to do that.</li>
+</ul>
+
+</div><p></p>
+</div>
+</div>
+
+<div id="outline-container-imstillconfusedaboutsuspendedjobsanymorehints" class="outline-3">
+<h3 id="imstillconfusedaboutsuspendedjobsanymorehints">I’m still confused about suspended jobs. Any more hints?</h3>
+<div class="outline-text-3" id="text-imstillconfusedaboutsuspendedjobsanymorehints">
+<script>function reveal2() { document.getElementById("nonspoiler2").style.display = "none"; document.getElementById("spoiler2").style.display = "inline"; }</script><button id="nonspoiler2" onclick="reveal2()">Click to reveal spoiler</button><div id="spoiler2" style="display:none">
+
+<p>
+To support suspended jobs, your shell should call <code>waitpid()</code> with the <code>WUNTRACED</code> option and check the returned status with <code>WIFSTOPPED()</code>. If that’s true, add the job to the list of suspended jobs.
+</p>
+
+<p>
+To resume a job, just <code>kill()</code> it with <code>SIGCONT</code>.
+</p>
+
+</div><p></p>
+
+<p>
+<i>This lab has borrowed some ideas from Prof. Arpaci-Dusseau and Dr. T. Y. Wong.</i>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>
