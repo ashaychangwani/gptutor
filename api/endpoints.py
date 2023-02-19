@@ -1,15 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 app = Flask(__name__)
-
-# @app.route('/') 
-# def query():
-#     data = jsonify(request.json)
-#     print(data)
-#     return data
-
-
-# curl -X GET "http://localhost:5000/?id=3"
 
 @app.route('/query', methods=['POST', 'GET'])
 def query():
