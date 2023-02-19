@@ -1,27 +1,30 @@
-from flask import Flask, request
-
+from flask import Flask, request, Response
+from brain import Brain
+import json
 app = Flask(__name__)
 
-@app.route('/query', methods=['POST', 'GET'])
+b = Brain()
+b.reload_models()
+@app.route('/query', methods=['POST'])
 def query():
-    if request.method == 'POST': 
-        print(request.form['message'])
-        return 'POST to "/query"'
-    else:
-        return 'GET to "/query"'
+    try:
+        print('Got query', request.form['message'],request.form.get('history', None))
+        payload = {
+            'text': b.answer_query_with_context(request.form['message'], b.text, b.context_embeddings, request.form.get('history', None), True)
+        }
+    except Exception as e:
+        print('Got exception',e)
+        payload = {'text':'Received error'}
+    print('Query response',payload)
+    return Response(json.dumps(payload), status = 200,  mimetype='application/json')
 
-@app.route('/upvote', methods=['POST', 'GET'])
+@app.route('/upvote', methods=['PUT'])
 def upvote():
-    if request.method == 'POST': 
-        print(request.form['message'])
-        return 'POST to "/upvote"'
-    else:
-        return 'GET to "/upvote"'
-
-@app.route('/downvote', methods=['POST', 'GET'])
-def downvote():
-    if request.method == 'POST': 
-        print(request.form['message'])
-        return 'POST to "/downvote"'
-    else:
-        return 'GET to "/downvote"'
+    try:
+        print('Got upvote',request.form['history'])
+        update_text = request.form['history'].split('\n')
+        b.text = b.update_text_embeddings(b.context_embeddings, b.text, update_text)
+        return Response(json.dumps({'text':'Database has been updated'}), status = 200,  mimetype='application/json')
+    except Exception as e:
+        print('Received exception in upvote',e)
+        return Response(json.dumps({'text':'There was an error'}), status = 500,  mimetype='application/json')
