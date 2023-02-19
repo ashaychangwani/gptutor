@@ -64,7 +64,7 @@ import os
 leopard = pvleopard.create(access_key="DuzTtzBNY2nEekopxTScCjygqVah/iAfO9LyFG9VphSvS0BewfxrQQ==")
 
 # transcript, words = leopard.process_file("C:\\Users\\shubh\\Downloads\\0_GMT20221107-215522_Recording.")
-transcript, words = leopard.process_file("C:\\Users\\shubh\\Downloads\\GMT20220907-205510_Recording.wav")
+transcript, words = leopard.process_file('Lecture Recordings/GMT20220907-205510_Recording.wav')
 
 print(transcript)
 
