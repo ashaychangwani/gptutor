@@ -1,0 +1,182 @@
+CSCI-UA.0202-002 Operating Systems
+Table of Contents
+Course information
+Description
+Textbook
+Class progress
+Grading
+Academic integrity
+Open door policy
+Course information
+
+Instructor: Yang Tang (he/him/his).
+Semester: Spring 2023.
+Time: Tuesdays and Thursdays 12:30 p.m. – 1:45 p.m.
+Venue: CANT 101.
+Teaching assistants:
+Tutors:
+Wenni Fan (wf630, she/her/hers).
+Zechen Guo (zg922, he/him/his).
+Yao Xiao (yx2436, he/him/his).
+Homework graders:
+Junru He (jh7948, she/her/hers).
+Rachit Jain (rj2219, he/him/his).
+Henan Liu (hl4001, he/him/his).
+Lab grader: Ashay Changwani (ac8832, he/him/his).
+
+Office hours: These office hours are shared across my undergraduate and graduate classes. Please tell me which class you are in before asking questions. No appointments needed.
+In-person: Tuesdays 3:00 p.m. – 4:00 p.m. @ CIWW 406.
+Online: Fridays 9:00 p.m. – 10:00 p.m. @ Zoom.
+
+I will stay online after 10 p.m. until all questions have been addressed.
+Tutoring hours:
+Mondays 8:00 p.m. – 10:00 p.m. @ Zoom.
+Tuesdays 8:00 p.m. – 10:00 p.m. @ Zoom.
+Wednesdays 7:30 p.m. – 9:30 p.m. @ Zoom.
+Thursdays 3:00 p.m. – 5:00 p.m. @ Zoom.
+Thursdays 7:00 p.m. – 9:00 p.m. @ Zoom.
+Fridays 1:30 p.m. – 3:30 p.m. @ Zoom.
+
+Prerequisites:
+CS201 Computer Systems Organization.
+MIT’s The Missing Semester of Your CS Education (optional but recommended).
+Familiarity with the C programming language in the Linux environment.
+Discord: We will be using Discord as our discussion forum. Please find the invitation link under the “Content” tab on Brightspace.
+This is an in-person course, and you are expected to attend every lecture.
+
+Description
+This is an introductory course in operating systems (OS), focusing on the high-level design of key OS concepts such as process scheduling and synchronization; deadlocks and their prevention; I/O and file systems; memory management, including (demand) paging and segmentation; and security and protection, using Linux as an example.
+
+Programming assignments (“labs”) constitute a crucial component of this course. They are based on the C programming language in the Linux environment, and you may find them significantly more challenging than what you have done in previous courses. There are four labs. Each lab (barring the first warm-up lab) is approximately 500 lines of code and requires at least 20–30 hours of coding and debugging, so proper time management is of utmost importance. There will not be kernel hacking labs. Instead, you will design and write practical, user-level programs from scratch to deal with real-world OS-related issues and better understand key OS concepts through the labs. You will build skills most desired by both academia and the industry, including problem-solving, documentation-reading, coding, debugging, and system-design skills.
+
+My goal is not only to teach OS but also to help everyone understand how computers work under the hood so that you can write more efficient code and become a better computer scientist/software engineer after taking this course.
+
+Got stuck?
+First of all, don’t be shy to ask any questions – my door is always open.
+
+We (the instructor and the course tutors) are happy and even eager to help with the labs. When should you ask for such help? Mainly, you should use your judgment (the rough answer is: “when you’re actually stuck”). Below are some guidelines.
+
+First, one of the main purposes of the labs is for you to go through the exercise of figuring out how to make a system work. Thus, if a lab is at first confusing even in its instructions, please don’t be discouraged; understanding the instructions is part of the work of the labs! Similarly, if your code is failing a test, note that our job is not to help your code to pass but to help you to figure out how to solve the problem.
+
+Labs in this course will be challenging. We hope they will also be very satisfying. We will work to help you meet the challenge. Our hope and expectation is that everyone who works hard on the labs will succeed. If you have ideas for improving the labs, please let us know. Good luck!
+
+Is this course for me?
+If you are looking for an easy course or thinking you can finish a month-long assignment in one week, this course is not for you. There may be other courses or sections more aligned with your expectations.
+
+However, if you want to be a competent computer scientist/software engineer and get a competitive edge in today’s job market, and you’re willing to devote at least 10 hours per week after class to this course, welcome to my class! I will spare no effort to guide you toward your goals.
+
+In case anyone is wondering, CSCI-GA.2250 is an undergraduate-level course for graduate students who did not take CS202. Both CS202 and CSCI-GA.2250 are introductory courses in operating systems.
+
+Textbook
+Required textbook
+Operating System Concepts, 10th Edition, by Avi Silberschatz, Peter Baer Galvin, and Greg Gagne. I recommend getting the e-book since that makes searching and cross-referencing much easier. If getting the textbook places a financial hardship on you, you can find a hard copy at the Bobst library or read the 8th Edition for free through O’Reilly Online Learning.
+Optional textbooks
+Modern Operating Systems, 4th Edition, by Andrew S. Tanenbaum and Herbert Bos. It’s also on reserve at the library.
+Operating Systems: Three Easy Pieces, by Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau. The e-book is free.
+Computer Systems: A Programmer’s Perspective, 3rd Edition, by Randal E. Bryant and David R. O’Hallaron. It’s also on reserve at the library.
+Programming reference books
+The C Programming Language, 2nd Edition, by Brian W. Kernighan and Dennis M. Ritchie. It’s also on reserve at the library.
+Advanced Programming in the UNIX® Environment, 3rd Edition, by W. Richard Stevens and Stephen A. Rago. Available for free through O’Reilly Online Learning.
+Class progress
+The class progress will be updated throughout the semester.
+
+Date	Topics	Reading	Homework	Labs
+1/24	Course overview.	 	 	nyuc (due: 2/10)
+1/26	Introduction.	§1, §2	Homework 1 (due: 2/8)	 
+1/31	Linking, process creation.	§3.1, §3.3	 	 
+2/2	Process execution.	 	 	nyush (due: 3/10)
+2/7	Syscalls in the kernel.	 	Homework 1 due	 
+2/9	Signals.	§4.6.2	Homework 2 (due: 2/22)	nyuc due
+2/14	Booting, orphans, process states, context switching.	§2.9.2, §3.2, §5.1	 	 
+2/16	Process scheduling.	§5.2, §5.3	 	 
+2/21	 	 	Homework 2 due	 
+2/23	 	 	Homework 3 (due: 3/8)	 
+2/28	 	 	 	 
+3/2	 	 	 	nyuenc (due: 4/7)
+3/7	 	 	Homework 3 due	 
+3/9	Midterm exam.	 	Homework 4 (due: 3/22)	nyush due
+3/14	Spring break. No class scheduled.	 	 	 
+3/16	Spring break. No class scheduled.	 	 	 
+3/21	 	 	Homework 4 due	 
+3/23	 	 	Homework 5 (due: 4/5)	 
+3/28	 	 	 	 
+3/30	 	 	 	nyufile (due: 5/5)
+4/4	 	 	Homework 5 due	 
+4/6	 	 	Homework 6 (due: 4/19)	nyuenc due
+4/11	 	 	 	 
+4/13	 	 	 	 
+4/18	 	 	Homework 6 due	 
+4/20	 	 	Homework 7 (due: 5/3)	 
+4/25	 	 	 	 
+4/27	 	 	 	 
+5/2	 	 	Homework 7 due	 
+5/4	 	 	 	nyufile due
+TBD	Final exam.	 	 	 
+The final exam will be scheduled by the University in accordance with the Final Exam Schedule.
+
+Grading
+Homework (10%).
+Labs (50%).
+Midterm exam (15%).
+Final exam (25%).
+Although class participation is a key ingredient in the learning process, it will not be included in the grading. If you feel sick, please stay home.
+
+Homework
+Assignments in the homework category will be graded loosely. To receive credit, you must make a credible effort to solve the problem; mistakes will not be penalized, but plagiarism will. These assignments are due every other Wednesday at 11:59 p.m., starting from the third week. Late submissions for homework will suffer 20 points penalty (out of 100) per day for up to 4 days. After that, they will not be accepted.
+
+As you can see, for homework, being punctual is more important than being correct.
+
+Labs
+All labs are to be done individually. We will use automated scripts (the “autograder”) to grade your labs in a black-box manner on Gradescope, and we will not manually grade any lab. Therefore, it is extremely important to follow each lab’s specifications exactly. Your submissions will be graded in real time, and you can resubmit them before the deadline. Labs are due every fourth Friday at 11:59 p.m., starting from the third week. Late submissions for labs will suffer 2 points penalty (out of 100) per day for up to 7 days. After that, they will not be accepted.
+
+You may notice that the lateness policy for labs is pretty lenient. This is intentional: it’s way better for you to hand in a working (or partially working) program a few days late than to submit something that does not work with the autograder.
+
+Each lab has multiple subtasks (“milestones”), from very easy to very hard. Keep in mind that the milestones have “diminishing returns” on your effort. For each lab:
+
+The first 40 points require little effort: read the lab specification and submit a minimally-working program to get them.
+The next 30 points require moderate effort. Most students can get them with 15–20 hours of coding and debugging.
+The last 30 points require significant effort. Try your best, but don’t feel bad if you cannot complete everything. I want to give you the opportunity to learn more and practice more, but depending on your objective, you should decide when to call it a day.
+Last but not least, we do not tolerate any cheating for any reason, and we will use sophisticated tools to detect them at the end of the semester.
+
+Exams
+Both the midterm and final exams are in-person and closed-book, but you can bring a double-sided 8.5x11in “cheat sheet.”
+
+No extra-credit assignments
+There will be no extra-credit assignments in this course. Exert yourself in the labs instead.
+
+Regrades
+You can submit any graded item for a regrade under the following conditions. First, you need to submit a clear, written statement that explains the request (what was wrong and why). Second, you must submit your request within one week of when the graded work is returned. Third, we will regrade the entire exam, homework, etc. (so a regrade can potentially decrease your grade).
+
+For homework, email your corresponding homework grader and cc the instructor.
+For labs, email the lab grader and cc the instructor.
+For exams, email the instructor directly.
+Grading scale
+90–100	A	60–70	C+
+85–90	A-	50–60	C
+80–85	B+	40–50	D
+75–80	B	<40	F
+70–75	B-	 	 
+We will not curve any individual assignments or exams. However, we may loosen the grading scale at the end of the semester. That is, we may curve up, but not down, the final letter grades.
+
+Academic integrity
+The academic integrity policy will be strictly enforced. All violations will be reported to the Director of Undergraduate Studies and subject to disciplinary action.
+
+For whatever reason, students sometimes think we aren’t serious about this. Then they find out we are serious, and it’s unpleasant for them. If you cheat, you will own the consequences.
+All your homework, labs, and exams must be your own. The code that you turn in must be code that you wrote and debugged. Do not discuss code, show others your code, look at anyone else’s code, or help others code or debug. You must not look at or use solutions from prior years or seek assistance from the Internet. If you have questions, ask the instructor or our course tutors via Discord (preferred), email, or during office hours.
+You must explicitly acknowledge all your influences within your submission. This means, first, writing down the names of people with whom you discussed the assignment and what you discussed with them. If student A gets an idea from student B, both students are obligated to write down that fact and also what the idea was. Second, you are obligated to acknowledge other contributions (for example, ideas from the Internet or other sources). Keep in mind that you must cite all sources, even if you rephrase or handwrite the answer. The only exception is that material presented by the instructor, the textbooks, the Linux man pages, and websites directly linked in the lab instructions do not require citations.
+You must take reasonable steps to protect your work. You must not publish your solutions (for example, on GitHub, Chegg, Course Hero, etc.). You are obligated to protect your files and printouts from access, and ignorance is not an excuse.
+If there are inexplicable discrepancies between the exam and lab performance, we may overweight the exam and possibly interview you. Our exams will cover the labs. If, in light of your exam performance, your lab performance is implausible, we may discount your lab grade (if this happens, we will notify you). We may also conduct an interview or oral exam.
+At the end of the semester, we will compare all your work against past submissions of CS202 and CSCI-GA.2250, as well as many online resources, using sophisticated plagiarism detection tools. If you can find something online, we can, too.
+More about collaboration
+You can discuss the labs in general terms with your classmates, provided that you acknowledge the discussion. It’s okay to explain to others how to use systems or tools or help others with high-level design issues. However, per the policy above, you cannot look at the work of anyone else. After discussing a problem with another student (or the course staff!), go do something else (e.g., read a book, watch a movie, or go to the gym) for half an hour before going back to work on the assignment. If you can’t remember what the person said after a half hour, you didn’t really understand it.
+
+More about source material
+You are welcome (and encouraged) to look at the example code in Linux man pages or the Linux kernel source code. Consistent with the policies and normal academic practice, you are obligated to cite any source that gave you code or an idea.
+
+Per the policy above, you may not look at any course material relating to any project or lab similar to this course’s assignments. You may not look at work done by students in past years’ courses. You may not look at similar course projects at other universities. If you are unsure about whether a particular source of external information is permitted, contact the instructor before looking at it.
+
+More about academic integrity
+The above guidelines are necessarily generalizations and cannot account for all circumstances. Intellectual dishonesty can end your career, and it is your responsibility to stay on the right side of the line. If you are not sure about something, ask.
+
+Open door policy
+I want everyone to feel comfortable in my classroom. Feel free to let me know what you like and dislike about the course at any time. If anything that I say bothers you, please do tell me so. I will apologize and do my best to understand the issue to avoid doing so again.

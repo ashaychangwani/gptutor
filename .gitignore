@@ -120,3 +120,4 @@ ENV/
 .ropeproject
 
 *.png
+.DS_Store
