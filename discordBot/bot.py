@@ -6,9 +6,8 @@ import requests
 #from dotenv import load_dotenv
 
 #load_dotenv()
-TOKEN = "MTA3NjYyNjAxMjM5NTI3NDI2MA.GizPcc.bBgYpuLlm8CdwVMBR1zSh6g6LplTKr0X6GpWwI"
-GUILD = "1076626797061488640"
-API_SERVER = "http://10.18.210.197:8001"
+TOKEN = os.getenv('DISCORD_TOKEN')
+API_SERVER = "http://127.0.0.1:8001"
 
 intents = discord.Intents.default()
 intents.message_content = True

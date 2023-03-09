@@ -6,16 +6,15 @@ import numpy as np
 import pickle
 from transformers import GPT2TokenizerFast
 from typing import List
-from ratelimit import limits,sleep_and_retry
 from time import sleep
 import pickle
+import os
 
 
 class Brain:
     COMPLETIONS_MODEL = "text-davinci-003"
     EMBEDDING_MODEL = "text-embedding-ada-002"
-    openai.api_key = "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"
-
+    openai.api_key = os.getenv("OPENAI_KEY")
     @backoff.on_exception(backoff.expo, (RateLimitError, ServiceUnavailableError))
     def get_embedding(self, text: str, model: str=EMBEDDING_MODEL, idx: int=0) -> list[float]:
         result = openai.Embedding.create(

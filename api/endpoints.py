@@ -28,3 +28,6 @@ def upvote():
     except Exception as e:
         print('Received exception in upvote',e)
         return Response(json.dumps({'text':'There was an error'}), status = 500,  mimetype='application/json')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8001, debug=True)
