@@ -27,12 +27,14 @@ ___
 ___
 
 4. Asking for confirmation
+
 Using this command, the professor can be called to fact check what the bot has stated. If the answer is incorrect, the professor will correct it, and finally using `/done` will retrain the model for future similar queries.
 
 ![confirmation-1](assets/confirmation-1.gif)
 ___
 
 5. Instant Retraining for future queries
+
 Since there is no connection to the internet, the bot cannot answer this question. However, it can call on the Professor to answer it, and once he has, the bot is instantly capable of answering similar questions in the future. We achieve this by not retraining the entire model, but simply adding the embeddings to the knowledge base, thus achieving the same effect.
 
 ![retrain-1](assets/retrain-1.gif)
