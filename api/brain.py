@@ -21,7 +21,6 @@ class Brain:
         model=model,
         input=text
         )
-        print(idx)
         return result["data"][0]["embedding"]
 
     def compute_doc_embeddings(self, df: pd.DataFrame) -> dict[tuple[str, str], list[float]]:
@@ -40,7 +39,7 @@ class Brain:
         }
 
     def update_text_embeddings(self, compute_embedding, text, new_text):
-        
+        print('Updating the model with data: ', new_text)
         compute_embedding.update(self.compute_text_embeddings(new_text, len(compute_embedding)))
         return text + new_text
 
@@ -138,35 +137,6 @@ class Brain:
     f"Context separator contains {separator_len} tokens"
 
 
-    def construct_prompt(self, question: str, context_embeddings: dict, df: pd.DataFrame) -> str:
-        """
-        Fetch relevant 
-        """
-        most_relevant_document_sections = self.order_document_sections_by_query_similarity(question, context_embeddings)
-        
-        chosen_sections = []
-        chosen_sections_len = 0
-        chosen_sections_indexes = []
-        
-        for _, section_index in most_relevant_document_sections:
-            # Add contexts until we run out of space.        
-            document_section = df.loc[section_index]
-            
-            chosen_sections_len += document_section.tokens + self.separator_len
-            if chosen_sections_len > self.MAX_SECTION_LEN:
-                break
-                
-            chosen_sections.append(self.SEPARATOR + document_section.content.replace("\n", " "))
-            chosen_sections_indexes.append(str(section_index))
-                
-        # Useful diagnostic information
-        # print(f"Selected {len(chosen_sections)} document sections:")
-        # print("\n".join(chosen_sections_indexes))
-        
-        header = """Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say "I don't know."\n\nContext:\n"""
-        
-        return header + "".join(chosen_sections) + "\n\n Q: " + question + "\n A:"
-
     def construct_prompt_with_text(self,question: str, context_embeddings: dict, text: list, previous_context: str = None) -> str:
         """
         Fetch relevant 
@@ -182,7 +152,7 @@ class Brain:
         
         for _, section_index in most_relevant_document_sections:
             # Add contexts until we run out of space.        
-            document_section = "\n".join(text[section_index-1:section_index+2])
+            document_section = "\n".join(text[section_index-3:section_index+3])
             
             chosen_sections_len += len(document_section.split()) + self.separator_len
             if chosen_sections_len > self.MAX_SECTION_LEN:
@@ -192,21 +162,18 @@ class Brain:
             chosen_sections_indexes.append(str(section_index))
                 
         # Useful diagnostic information
-        print(f"Selected {len(chosen_sections)} document sections:")
-        print("\n".join(chosen_sections_indexes))
-        header = """Generalized Information:\n"""
+        print(f"Selected {len(chosen_sections)} document sections:","\t".join(chosen_sections_indexes))
+        header = """Answer the questions as truthfully as possible using the provided context, and if the answer is not contained within the context, say "I don't know." Put ``` before and after the code.\n\nGeneralized Information:\n"""
         
         prompt = header + "".join(chosen_sections) 
         if previous_context is not None:
-            prompt = prompt + "\n\nPrevious conversation:\n" + previous_context
-        
-        prompt = prompt + """Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say "I don't know." Put ``` before and after the code.\n\n"""
-        prompt = prompt +"\n\n Q: " + question + "\n A:"
+            prompt = prompt + "\n\n" + previous_context
+        prompt = prompt +"\n " + question
         return prompt
 
     COMPLETIONS_API_PARAMS = {
         # We use temperature of 0.0 because it gives the most predictable, factual answer.
-        "temperature": 0.0,
+        "temperature": 1.0,
         "max_tokens": 300,
         "model": COMPLETIONS_MODEL,
     }

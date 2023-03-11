@@ -21,8 +21,9 @@ def query():
 @app.route('/upvote', methods=['PUT'])
 def upvote():
     try:
-        print('Got upvote',request.form['history'])
-        update_text = request.form['history'].split('\n')
+        data = json.loads(request.data)
+        print('Got upvote',data['history'])
+        update_text = data['history']
         b.text = b.update_text_embeddings(b.context_embeddings, b.text, update_text)
         return Response(json.dumps({'text':'Database has been updated'}), status = 200,  mimetype='application/json')
     except Exception as e:

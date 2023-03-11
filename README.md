@@ -1,5 +1,41 @@
-## GPTutor
-This project was created for HackNYU 2023. It aims to create a course specific bot that can act as a tutor. This bot would use the GPT model's ability to parse natural language, yet use the course content as the source of ground truth. This would allow the bot to answer questions that are specific to the course content, and provide a more personalized experience for the student. Additionally, the professor would be able to add to the bot's knowledge base by adding correct answers to questions that the bot gets wrong. Hence, the bot learns and can then answer questions better in the future. 
+<h1>
+  <img src="assets/logo.png" alt="alt text" width="50" height="50">
+  GPTutor
+</h1>
+
+This project was created for `HackNYU 2023` . It aims to create a tutor in the form of a bot. This bot would use the GPT model's ability to parse natural language, yet use the course content as the source of ground truth. This would allow the bot to answer questions that are specific to the course content, and provide a more personalized experience for the student. Additionally, the professor would be able to add to the bot's knowledge base by adding correct answers to questions that the bot gets wrong. Hence, the bot learns and can then answer questions better in the future. 
+
+
+## Demo
+Note that this is all information either from the professor's website/slides/lectures, or the texts that he has prescribed. There is no connection to the internet.
+___
+1. Answering course-specific questions
+
+![course-1](assets/course-1.gif)
+![course-2](assets/course-2.gif)
+___
+
+2. Answering questions about the subject material
+
+![content-1](assets/content-1.gif)
+___
+
+3. Answering with code
+
+![code-1](assets/code-1.gif)
+![code-2](assets/code-2.gif)
+___
+
+4. Asking for confirmation
+Using this command, the professor can be called to fact check what the bot has stated. If the answer is incorrect, the professor will correct it, and finally using `/done` will retrain the model for future similar queries.
+
+![confirmation-1](assets/confirmation-1.gif)
+___
+
+5. Instant Retraining for future queries
+Since there is no connection to the internet, the bot cannot answer this question. However, it can call on the Professor to answer it, and once he has, the bot is instantly capable of answering similar questions in the future. We achieve this by not retraining the entire model, but simply adding the embeddings to the knowledge base, thus achieving the same effect.
+
+![retrain-1](assets/retrain-1.gif)
 
 ## Inspiration
 Each professor teaches their course material in a unique manner. They might pick and choose the concepts they teach or use technical vocabulary in unconventional ways. Furthermore, the order in which they teach these concepts varies from professor to professor. All this can make searching for answers on external resources confusing for students, who may be inundated with concepts they haven't learned yet, or with concepts they have learned but which are now discussed in a different manner or context than they were in class.  And since we cannot increase the number of teachers, or the amount of extra time teachers spend in office hours, our GPTBot can fill this gap by providing students a source of inquiry that is always available to them.

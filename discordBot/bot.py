@@ -1,21 +1,21 @@
 import os
-
-import discord
+import asyncio
 import requests
+import interactions  
+import json
 
-#from dotenv import load_dotenv
-
-#load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 API_SERVER = "http://127.0.0.1:8001"
-
-intents = discord.Intents.default()
-intents.message_content = True
-client = discord.Client(intents=intents)
+tracked_threads = []
+GUILD_NUM = os.getenv('GUILD_NUM')
+client = interactions.Client(token=TOKEN)
 
 @client.event
 async def on_ready():
-    print(f'{client.user.name} has connected to Discord!')
+    global GUILD, PROFESSOR_ROLE
+    print(f'Connected to Discord!')
+    GUILD = client.guilds[0]
+    PROFESSOR_ROLE = next((role for role in await GUILD.get_all_roles() if role.name == 'professor'), None)
 
 @client.event
 async def on_member_join(member):
@@ -24,55 +24,30 @@ async def on_member_join(member):
         f'Hi {member.name}, welcome to my Discord server!'
     )
 
-"""def format(threadMessages):
-    for i in range(threadMessages):
-        if i == 0:
-            prepend with Q:
-        else if i%2 == 0:
-            prepend with A:
-        else prepend with Q:
-    
-    return
-
-    return Q/A format
-def deal(message, thread):
-
-    formattedThread = format(thread)
-    # response = make a get request, with parameter formattedThread
-    response = formattedThread
-    return response"""
-def removeExclQuery(query):
-    #Given the string !query Hello, return only Hello
-    if query.startswith('!query'):
-        return query[7:]
-    return query
-
-def dealWithMSG(query):
-    pass
-
-
-def processQuery(messages):
-    processedMessages = ""
-    for i in range(len(messages)-1,0,-1):
-        print(messages[i])
-        if i == len(messages)-1 or messages[i].content.startswith('!query'): 
-            processedMessages += 'Q: '+ removeExclQuery(messages[i].content) +"\n"
-        elif messages[i].author.name == 'nyuHackBot' or messages[i].author.name =='Shubh587':
-            if messages[i].content.startswith('Hello') and messages[i].author.name == 'nyuHackBot':
+async def get_history(channel):
+    message_history = [message for message in await channel.history().flatten()]
+    history = []
+    for i, message in reversed(list(enumerate(message_history))):
+        content = message.referenced_message.content if i == (len(message_history) - 1) else message.content
+        if message.author == await client.get_self_user():
+            if content.startswith("I don't know") or content.startswith("Hello") or content.startswith('Thanks for confirming'):
                 continue
-            if messages[i].content == "I don't know.":
-                continue
-            processedMessages += 'A: '+messages[i].content + "\n"
-    return processedMessages 
+            if i == (len(message_history) - 1):
+                history.append(content) #The first message in the thread is the query
+            else:
+                history.append(" A: " + content)
+        elif message.author.username == 'PROF':
+            history.append(" A: " + content)
+        else:
+            history.append(" Q: " + content)
+    return history
 
 #this is for the post request to interact with LLM
-def get_response(query, history = None):
+def get_response(query):
     data = {
-        "message": query,
+        "message": '\n'.join(query)+"\n A: ",
     }
     print('payload of POST',data)
-    if history is not None:
-        data['history'] = history
     x = requests.post(API_SERVER+"/query", data = data)
     response = x.json()
     print('response of POST',response)
@@ -82,87 +57,72 @@ def get_response(query, history = None):
         return "Exception occured"
 
 #this is the end of thread signal put queries
-def get_response_put(history):
+def thread_done(history):
     data = {}
     if history is not None:
         data['history'] = history
     else:
         return "No history to process"
-    x = requests.put(API_SERVER+"/upvote", data = data)
+    
+    x = requests.put(API_SERVER+"/upvote", data = json.dumps(data))
     response = x.json()
     if(x.status_code == 200):
         return response['text']
     else:
         return "Exception occured"
 
+@client.command(
+    name="query",
+    description="Ask a query for the tutor!",
+    scope=GUILD_NUM,
+)
+@interactions.option(
+    name="text",
+    description="What is your question?",
+    type=interactions.OptionType.STRING,
+    required=True,
+)
+async def query(ctx, text):
+    message = await ctx.send("Q: " + text)
+    thread = await ctx.channel.create_thread(name=text, message_id=message)
+    tracked_threads.append(thread)
+    history = await get_history(thread)
+    response = get_response(history)
+    await thread.send(response)
+
 @client.event
-async def on_message(message):
-    if message.author == client.user:
+async def on_message_create(message):
+    if message.author == await client.get_self_user() or message.author.username == 'deepk':
         return
-    #print('Professor' in [role.name for role in message.author.roles])
-    if message.content.startswith('!query') and message.channel.name == 'general':
-        #print(message)
-        print("channel")
-        #https://stackoverflow.com/questions/71797750/how-to-send-message-in-a-discord-thread
-        thread = await message.channel.create_thread(name="Thread" , type=discord.ChannelType.public_thread )
-        formattedMsg = removeExclQuery(message.content)
-        await thread.send( message.content )
-        response = get_response( removeExclQuery(message.content) )
-        await thread.send(response)
-        
-    elif message.content.startswith('!query') and message.channel.name != 'general':
-        #print(message)
-        print("thread")
-        thread_id = message.channel.id
-        thread = message.guild.get_thread(thread_id)
-        
-        queryToProcess = [message async for message in thread.history()]
-        formattedHist = processQuery(queryToProcess)
-        response = get_response( removeExclQuery(message.content) , formattedHist )
+    thread = await message.get_channel()
+    if thread in tracked_threads:
+        history = await get_history(thread)
+        response = get_response(history)
         await thread.send(response)
 
+@client.command(
+    name="downvote",
+    description="Ask for the professor's attention",
+    scope=GUILD_NUM,
+)
+async def downvote(ctx):
+    reply = f'Hello {PROFESSOR_ROLE.mention}, this is a message for you!'
+    await ctx.send(reply) 
 
-    elif message.content.startswith('!done') and message.channel.name != 'general':
-        thread_id = message.channel.id
-        thread = message.guild.get_thread(thread_id)
-        if "\U0001F44D" in message.content:
-            print("bingo")
-            queryToProcess = [message async for message in thread.history()]
-            formattedHist = processQuery(queryToProcess)
-            response = get_response_put( formattedHist )
-            await message.add_reaction("👍")
-        #for thumbsdown cases
-        elif "\U0001F44E" in message.content:
-            print("This message contains a thumbs down emoji!")
-            professor_role = discord.utils.get(message.guild.roles, name="Professor")
-            await thread.send(f"Hello {professor_role.mention}, this is a message for you!")
-            #send to API to learn from failure
+@client.command(
+    name="done",
+    description="End the thread and update the model",
+    scope=GUILD_NUM,
+)
+async def done(ctx):
+    thread = await ctx.get_channel()
+    if thread in tracked_threads:
+        message = await ctx.send('Thanks for confirming! The model has been updated 👍', ephemeral=False)
+        thread = await message.get_channel()
+        history = await get_history(thread)
+        tracked_threads.remove(thread)
+        response = thread_done(history)
+    else:
+        await ctx.send('This command can only be called in an active query thread', ephemeral=True)
 
-            
-
-client.run(TOKEN)
-
-
-"""
-<Message id=1076648261777105017 channel=<TextChannel id=1076626797061488644 name='general' position=0 
-nsfw=False news=False category_id=1076626797061488641> type=<MessageType.default: 0> author=<Member 
-id=881987116635160596 name='fenderbender' discriminator='5706' bot=False nick=None guild=<Guild 
-id=1076626797061488640 name="fenderbender's server" shard_id=0 chunked=False member_count=3>> 
-flags=<MessageFlags value=0>>
-
-<Message id=1076648320505745448 channel=<Thread id=1076648262217502782 name='Thread' parent=general 
-owner_id=1076626012395274260 locked=False archived=False> type=<MessageType.default: 0> 
-author=<Member id=881987116635160596 name='fenderbender' discriminator='5706' bot=False 
-nick=None guild=<Guild id=1076626797061488640 name="fenderbender's server" shard_id=0 
-chunked=False member_count=3>> flags=<MessageFlags value=0>>
-
-
-        queryToProcess = [message.content async for message in thread.history()]
-        for i in range(len(queryToProcess)-1, -1, -1):
-            if i == 0:
-                print("Q: " + queryToProcess[i])
-            elif i%2 == 0:
-                print("A: " + queryToProcess[i])
-            else:
-                print("Q: " + queryToProcess[i])
-"""
+client.start()
